@@ -35,16 +35,33 @@ STACKID=$(aws cloudformation deploy \
   --region $REGION \
   --template-file $TEMPLATE_URL)
 
-# 2.  Deploy the CFN stack
+# 2.  Deploy the Serverless stack
 cd ../backend
 
 STAGE=$STAGE REGION=$REGION npm run sls-deploy
 
-# 3.  Deploy the Serverless backend
+# 3.  Deploy the Frontend
 cd ../frontend
 
 echo "Building the frontend..."
 
-# 4.  Build & deploy the frontend
+API_STACKNAME="techfair2019-web-backend-$STAGE"
+API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name $API_STACKNAME --region $REGION --output text --query 'Stacks[0].Outputs[?OutputKey==`ServiceEndpoint`].{OutputValue:OutputValue}[0].OutputValue' 2> /dev/null)
+FRONTEND_BUCKET=$(aws cloudformation describe-stacks --stack-name $STACKNAME --region $REGION --output text --query 'Stacks[0].Outputs[?OutputKey==`FrontendS3`].{OutputValue:OutputValue}[0].OutputValue' 2> /dev/null)
 
-cd 
+API_ENDPOINT="$API_ENDPOINT" npm run build
+
+cd ./build
+
+aws s3 sync . s3://$FRONTEND_BUCKET \
+  --delete  \
+  --include "*"
+
+# 4.  Done!
+echo ""
+echo ""
+echo "Done! App is running at:"
+echo ""
+echo "http://$FRONTEND_BUCKET.s3-website-eu-west-1.amazonaws.com"
+echo ""
+echo ""

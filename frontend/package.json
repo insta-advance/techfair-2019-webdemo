@@ -9,8 +9,8 @@
     "react-scripts": "2.1.8"
   },
   "scripts": {
-    "start": "REACT_APP_API_URL=http://paska.com react-scripts start",
-    "build": "react-scripts build",
+    "start": "REACT_APP_API_URL=${API_ENDPOINT} react-scripts start",
+    "build": "REACT_APP_API_URL=${API_ENDPOINT} react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
