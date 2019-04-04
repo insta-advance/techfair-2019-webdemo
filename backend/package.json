@@ -1,0 +1,26 @@
+{
+  "name": "techfair2019-backend",
+  "version": "1.0.0",
+  "description": "Tech Fair 2019 Web Demo Backend",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf ./node_modules && rm -rf ./src/test && rm -rf ./src/node_modules",
+    "postinstall": "cd src/ && npm install",
+    "dev": "cp serverless.yaml ./src && cd ./src && npm run lint && serverless offline start -s ${STAGE:=dev}",
+    "sls-deploy": "cp serverless.yaml ./src && cd src && serverless deploy --stage ${STAGE:=dev} --region ${REGION:=eu-west-1}",
+    "sls-remove": "cp serverless.yaml ./src && cd src && serverless remove --stage ${STAGE:=dev} --region ${REGION:=eu-west-1}",
+    "prepush": "npm run lint && npm run test"
+  },
+  "keywords": [],
+  "author": "Jiri Stanglica <jiri.stanglica@intopalo.com>",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.168.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.8.0",
+    "serverless": "^1.40.0"
+  }
+}

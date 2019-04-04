@@ -1,0 +1,19 @@
+{
+  "name": "techfair2019-backend-src",
+  "version": "1.0.0",
+  "description": "Tech Fair 2019 Web Demo Backend",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "author": "Jiri Stanglica <jiri.stanglica@intopalo.com>",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.168.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^3.20.2",
+    "serverless-plugin-include-dependencies": "^3.0.0"
+  },
+  "private": true
+}

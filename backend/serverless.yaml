@@ -1,0 +1,95 @@
+service: techfair2019-web-backend
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'dev'}
+  timeout: 25
+  region: ${opt:region, 'eu-west-1'}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: ${self:custom.dynamodb.tableArn}
+
+  stackTags:
+    Application : Tech Fair 2019 Backend
+    ProjectName: techfair2019
+    DevStage : ${self:provider.stage}
+
+  environment:
+    DYNAMODB_TABLE_ARN: ${self:custom.dynamodb.tableArn}
+
+custom:
+  # Infrastructure CloudFormation stack
+  infrastructureStackName: ${self:provider.stackTags.ProjectName}-${self:provider.stage}-infrastructure
+  # DynamoDb settings
+  dynamodb:
+    tableArn: ${cf:${self:custom.infrastructureStackName}.DynamoDB}
+  # CORS settings
+  defaultCors:
+    origins:
+      - '*'
+    headers:
+      - Content-Type
+      - X-Amz-Date
+      - Authorization
+      - X-Api-Key
+      - X-Amz-Security-Token
+      - X-Amz-User-Agent
+    allowCredentials: false
+
+functions:
+  # Users
+  getUsers:
+    handler: user/handler.get
+    events:
+      - http:
+          path: api/users
+          method: get
+          cors: ${self:custom.defaultCors}
+  getSingleUser:
+    handler: user/handler.getSingle
+    events:
+      - http:
+          path: api/users/{id}
+          method: get
+          cors: ${self:custom.defaultCors}
+  # Todos
+  getTodosByUser:
+    handler: todo/handler.getTodoByUserId
+    events:
+      - http:
+          path: api/users/{id}/todos
+          method: get
+          cors: ${self:custom.defaultCors}
+  createTodo:
+    handler: todo/handler.postTodo
+    events:
+      - http:
+          path: api/users/{id}/todos
+          method: post
+          cors: ${self:custom.defaultCors}
+  updateTodo:
+    handler: todo/handler.putTodo
+    events:
+      - http:
+          path: api/users/{id}/todos/{todoid}
+          method: put
+          cors: ${self:custom.defaultCors}
+  deleteTodo:
+    handler: todo/handler.deleteTodo
+    events:
+      - http:
+          path: api/users/{id}/todos/{todoid}
+          method: delete
+          cors: ${self:custom.defaultCors}
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-include-dependencies

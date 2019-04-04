@@ -1,0 +1,30 @@
+# Editor directories and files
+.idea
+.vscode
+*.code-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# package directories
+node_modules
+jspm_packages
+
+# npm stuff
+npm-debug.log
+
+# Serverless stuff
+.serverless
+.serverless-secrets.json
+
+# Jest stuff
+coverage
+
+# Avoid duplicates - these are copied
+src/serverless.yaml
+src/test/
+dist/
+
+# Test reports
+test-reports

@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: |
+  This stack creates the S3 bucket for the frontend application and
+  the DynamoDB table for storing users and their todos
+
+Parameters:
+  ProjectName:
+    Description: Project name that will be prefixed to resource names and used as a "Project" tag
+    Type: String
+    Default: techfair2019
+  Stage:
+    Description: Development stage name that will be prefixed to resource names (prod, dev, etc.)
+    Type: String
+    Default: dev
+
+Resources:
+  # Frontend bucket resources
+  FrontendS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${Stage}-Frontend S3 Bucket
+        - Key: Project
+          Value: !Ref ProjectName
+
+  FrontendS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref 'FrontendS3Bucket'
+      PolicyDocument:
+        Statement:
+        - Sid: PublicReadForGetBucketObjects
+          Effect: Allow
+          Principal: '*'
+          Action: s3:GetObject
+          Resource: !Join ['', ['arn:aws:s3:::', !Ref 'FrontendS3Bucket', /*]]
+  
+  # DynamoDB resources
+  TodosDynamoDbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: id
+          AttributeType: S
+      KeySchema:
+        -
+          AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${Stage}-DynamoDb Table
+        - Key: Project
+          Value: !Ref ProjectName
+
+Outputs:
+  DynamoDB:
+    Description: DynamoDB Table Name
+    Value: !GetAtt [TodosDynamoDbTable, Arn]
+  FrontendS3:
+    Description: Frontend Bucket Name
+    Value: !Ref FrontendS3Bucket
