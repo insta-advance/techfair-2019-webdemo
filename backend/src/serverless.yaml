@@ -47,14 +47,14 @@ custom:
 functions:
   # Users
   getUsers:
-    handler: user/handler.get
+    handler: user/handler.lambda.get
     events:
       - http:
           path: api/users
           method: get
           cors: ${self:custom.defaultCors}
   getSingleUser:
-    handler: user/handler.getSingle
+    handler: user/handler.lambda.getSingle
     events:
       - http:
           path: api/users/{id}
@@ -62,31 +62,31 @@ functions:
           cors: ${self:custom.defaultCors}
   # Todos
   getTodosByUser:
-    handler: todo/handler.getTodoByUserId
+    handler: todo/handler.lambda.getTodoByUserId
     events:
       - http:
           path: api/users/{id}/todos
           method: get
           cors: ${self:custom.defaultCors}
   createTodo:
-    handler: todo/handler.postTodo
+    handler: todo/handler.lambda.postTodo
     events:
       - http:
           path: api/users/{id}/todos
           method: post
           cors: ${self:custom.defaultCors}
   updateTodo:
-    handler: todo/handler.putTodo
+    handler: todo/handler.lambda.putTodo
     events:
       - http:
-          path: api/users/{id}/todos/{todoid}
+          path: api/users/{id}/todos/{todoId}
           method: put
           cors: ${self:custom.defaultCors}
   deleteTodo:
-    handler: todo/handler.deleteTodo
+    handler: todo/handler.lambda.deleteTodo
     events:
       - http:
-          path: api/users/{id}/todos/{todoid}
+          path: api/users/{id}/todos/{todoId}
           method: delete
           cors: ${self:custom.defaultCors}
 

@@ -2,14 +2,11 @@
 * @module todo/handler
 */
 
-const { sendResponse, sendError } = require('../utils/response');
 const HttpError = require('../utils/httpError');
 // Controller
 const Todo = require('./todo');
 
-const getTodoByUserId = async (event, context, callback) => {
-  try {
-    const { id } = event.pathParameters;
+const getTodosByUserId = async (id) => {
     if (id == null) {
       throw new HttpError('User ID is required.', 400);
     }
@@ -19,22 +16,17 @@ const getTodoByUserId = async (event, context, callback) => {
       throw new HttpError('User not found.', 404);
     }
 
-    sendResponse(callback, 200, todos);
-  } catch (e) {
-    sendError(callback, e);
-  }
+    return todos;
 };
 
-const postTodo = async (event, context, callback) => {
-  try {
+const postTodo = async (id, todo) => {
     let body;
     try {
-      body = JSON.parse(event.body);
+      body = JSON.parse(todo);
     } catch (e) {
       throw new HttpError('Invalid request body', 400);
     }
 
-    const { id } = event.pathParameters;
     if (id == null) {
       throw new HttpError('User ID is required.', 400);
     }
@@ -53,26 +45,21 @@ const postTodo = async (event, context, callback) => {
       throw new HttpError('User not found.', 404);
     }
 
-    sendResponse(callback, 200, newTodo);
-  } catch (e) {
-    sendError(callback, e);
-  }
+    return newTodo;
 };
 
-const putTodo = async (event, context, callback) => {
-  try {
+const putTodo = async (id, todoId, todo) => {
     let body;
     try {
-      body = JSON.parse(event.body);
+      body = JSON.parse(todo);
     } catch (e) {
       throw new HttpError('Invalid request body', 400);
     }
 
-    const { id, todoid } = event.pathParameters;
     if (id == null) {
       throw new HttpError('User ID is required.', 400);
     }
-    if (todoid == null) {
+    if (todoId == null) {
       throw new HttpError('Todo ID is required.', 400);
     }
 
@@ -88,40 +75,32 @@ const putTodo = async (event, context, callback) => {
       throw new HttpError('Invalid format of Todo object.', 400);
     }
 
-    const updatedTodo = await Todo.updateUserTodo(id, todoid, body);
+    const updatedTodo = await Todo.updateUserTodo(id, todoId, body);
     if (!updatedTodo) {
       throw new HttpError('User not found.', 404);
     }
 
-    sendResponse(callback, 200, updatedTodo);
-  } catch (e) {
-    sendError(callback, e);
-  }
+    return updatedTodo;
 };
 
-const deleteTodo = async (event, context, callback) => {
-  try {
-    const { id, todoid } = event.pathParameters;
+const deleteTodo = async (id, todoId) => {
     if (id == null) {
       throw new HttpError('User ID is required.', 400);
     }
-    if (todoid == null) {
+    if (todoId == null) {
       throw new HttpError('Todo ID is required.', 400);
     }
 
-    const updatedTodo = await Todo.deleteUserTodo(id, todoid);
-    if (!updatedTodo) {
+    const deletedTodo = await Todo.deleteUserTodo(id, todoId);
+    if (!deletedTodo) {
       throw new HttpError('User not found.', 404);
     }
 
-    sendResponse(callback, 204);
-  } catch (e) {
-    sendError(callback, e);
-  }
+    return deletedTodo;
 };
 
 module.exports = {
-  getTodoByUserId,
+  getTodosByUserId,
   postTodo,
   putTodo,
   deleteTodo,

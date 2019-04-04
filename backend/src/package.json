@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "description": "Tech Fair 2019 Web Demo Backend",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "express-start-dev": "node express"
   },
   "keywords": [],
   "author": "Jiri Stanglica <jiri.stanglica@intopalo.com>",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.168.0"
+    "aws-sdk": "^2.168.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4"
   },
   "devDependencies": {
     "serverless-offline": "^3.20.2",
