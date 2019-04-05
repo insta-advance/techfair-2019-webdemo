@@ -48,7 +48,6 @@ DBARN=$(aws cloudformation describe-stacks --stack-name $STACKNAME --region $REG
 DBNAME="$(cut -d'/' -f2 <<<$DBARN)"
 
 sed "2s/.*/\"$DBNAME\":/" db_seed.json > tmp && mv tmp db_seed.json
-rm tmp
 
 REGION=$REGION sh seed_db.sh
 
