@@ -41,11 +41,24 @@ aws s3 sync . s3://$FRONTEND_BUCKET \
   --delete  \
   --include "*"
 
-# 4.  Done!
+# 4.  Seed the database
+cd ../../infrastructure
+
+DBARN=$(aws cloudformation describe-stacks --stack-name $STACKNAME --region $REGION --output text --query 'Stacks[0].Outputs[?OutputKey==`DynamoDB`].{OutputValue:OutputValue}[0].OutputValue' 2> /dev/null)
+DBNAME="$(cut -d'/' -f2 <<<$DBARN)"
+
+sed "2s/.*/\"$DBNAME\":/" db_seed.json > tmp && mv tmp db_seed.json
+rm tmp
+
+REGION=$REGION sh seed_db.sh
+
+# 5.  Done!
+FRONTEND_BUCKET_ENDPOINT=$(aws cloudformation describe-stacks --stack-name $STACKNAME --region $REGION --output text --query 'Stacks[0].Outputs[?OutputKey==`FrontendS3Endpoint`].{OutputValue:OutputValue}[0].OutputValue' 2> /dev/null)
+
 echo ""
 echo ""
 echo "Done! App is running at:"
 echo ""
-echo "http://$FRONTEND_BUCKET.s3-website-eu-west-1.amazonaws.com"
+echo "$FRONTEND_BUCKET_ENDPOINT"
 echo ""
 echo ""
