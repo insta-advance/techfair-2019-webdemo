@@ -18,11 +18,12 @@ provider:
       Resource: ${self:custom.dynamodb.tableArn}
 
   stackTags:
-    Application : Tech Fair 2019 Backend
+    Application: Tech Fair 2019 Backend
     ProjectName: techfair2019
-    DevStage : ${self:provider.stage}
+    DevStage: ${self:provider.stage}
 
   environment:
+    DEPLOYMENT: serverless
     DYNAMODB_TABLE_ARN: ${self:custom.dynamodb.tableArn}
 
 custom:
@@ -34,7 +35,7 @@ custom:
   # CORS settings
   defaultCors:
     origins:
-      - '*'
+      - "*"
     headers:
       - Content-Type
       - X-Amz-Date

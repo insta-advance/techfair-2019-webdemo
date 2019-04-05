@@ -8,9 +8,13 @@ const throwOnFailure = response => {
   return response;
 };
 
+const headers = {
+  "Content-Type": "application/json"
+};
+
 const xhr = {
   async get(url) {
-    const response = await window.fetch(url);
+    const response = await window.fetch(url, { headers });
     const jsonResult = await throwOnFailure(response).json();
 
     return jsonResult;
@@ -18,6 +22,7 @@ const xhr = {
   async post(url, body) {
     const response = await window.fetch(url, {
       method: "POST",
+      headers,
       body: JSON.stringify(body)
     });
     const jsonResult = await throwOnFailure(response).json();
@@ -27,6 +32,7 @@ const xhr = {
   async put(url, body) {
     const response = await window.fetch(url, {
       method: "PUT",
+      headers,
       body: JSON.stringify(body)
     });
     const jsonResult = await throwOnFailure(response).json();
@@ -34,7 +40,7 @@ const xhr = {
     return jsonResult;
   },
   async delete(url) {
-    const response = await window.fetch(url, { method: "DELETE" });
+    const response = await window.fetch(url, { headers, method: "DELETE" });
     throwOnFailure(response);
 
     return true;

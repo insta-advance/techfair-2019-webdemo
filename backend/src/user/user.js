@@ -1,4 +1,4 @@
-const db = require('../utils/dynamodb');
+const db = require('../utils/db');
 
 const getAll = async () => {
   const dbResult = await db.getAll({

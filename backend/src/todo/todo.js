@@ -1,4 +1,4 @@
-const db = require('../utils/dynamodb');
+const db = require('../utils/db');
 
 const getAllByUser = async (userId) => {
   if (userId == null) {
