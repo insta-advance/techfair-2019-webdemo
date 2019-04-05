@@ -17,6 +17,7 @@ const getTodoByUserId = async (req, res, next) => {
 
 const postTodo = async (req, res, next) => {
   try {
+    console.log(req);
     const { id } = req.params;
     const { body } = req;
     const newTodo = await handler.postTodo(id, body);

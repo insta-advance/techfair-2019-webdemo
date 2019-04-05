@@ -21,8 +21,9 @@ const getTodosByUserId = async (id) => {
 
 const postTodo = async (id, todo) => {
   let body;
+  console.log(id, todo, typeof todo);
   try {
-    body = JSON.parse(todo);
+    body = todo && typeof todo === "object" ? todo : JSON.parse(todo);
   } catch (e) {
     throw new HttpError('Invalid request body', 400);
   }
@@ -51,7 +52,7 @@ const postTodo = async (id, todo) => {
 const putTodo = async (id, todoId, todo) => {
   let body;
   try {
-    body = JSON.parse(todo);
+    body = todo && typeof todo === "object" ? todo : JSON.parse(todo);
   } catch (e) {
     throw new HttpError('Invalid request body', 400);
   }
