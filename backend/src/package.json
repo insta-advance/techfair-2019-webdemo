@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "nodemon": "^1.18.10",
-    "serverless-offline": "^3.20.2",
     "serverless-plugin-include-dependencies": "^3.0.0"
   },
   "private": true

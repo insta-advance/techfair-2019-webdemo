@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf ./node_modules && rm -rf ./src/test && rm -rf ./src/node_modules",
     "postinstall": "cd src/ && npm install",
-    "dev": "cp serverless.yaml ./src && cd ./src && npm run lint && serverless offline start -s ${STAGE:=dev}",
+    "dev": "cd src/ && npm run express-start-dev",
     "sls-deploy": "cp serverless.yaml ./src && cd src && serverless deploy --stage ${STAGE:=dev} --region ${REGION:=eu-west-1}",
     "sls-remove": "cp serverless.yaml ./src && cd src && serverless remove --stage ${STAGE:=dev} --region ${REGION:=eu-west-1}",
     "prepush": "npm run lint && npm run test"

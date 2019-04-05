@@ -17,8 +17,8 @@ function Todo(title, description, isDone = false) {
 
 const jsonDb = {
   users: [
-    new User("Dude", [new Todo("Build stuff", "You should really build some stuff")]),
-    new User("Guy")
+    new User('Dude', [new Todo('Build stuff', 'You should really build some stuff')]),
+    new User('Guy'),
   ],
   scan({ attributes }) {
     if (!attributes) {
@@ -63,8 +63,8 @@ const jsonDb = {
     user[update].push(value);
 
     return user[update];
-  }
-}
+  },
+};
 
 /**
  * Scan the table for all the results.
@@ -160,7 +160,7 @@ const updateListItem = async (_options = {}) => {
   if (editedIndex === -1) {
     return null;
   }
-  
+
   const newItems = JSON.parse(JSON.stringify(items));
 
   newItems[editedIndex] = {
@@ -207,13 +207,13 @@ const deleteListItem = async (_options = {}) => {
   if (editedIndex === -1) {
     return null;
   }
-  
+
   const newItems = items.slice().splice(editedIndex, 1);
 
   const params = {
     id: _options.key,
     update: _options.listName,
-    value: newItems
+    value: newItems,
   };
 
   if (Array.isArray(_options.attributes)) {

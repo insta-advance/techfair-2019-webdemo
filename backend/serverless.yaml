@@ -92,5 +92,4 @@ functions:
           cors: ${self:custom.defaultCors}
 
 plugins:
-  - serverless-offline
   - serverless-plugin-include-dependencies
