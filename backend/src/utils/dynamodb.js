@@ -1,10 +1,12 @@
 const AWS = require('aws-sdk');
 
 // Get the table name from the table arn
-const tableName = process.env.DYNAMODB_TABLE_ARN.split('/')[1];
+const tableName = process.env.DYNAMODB_TABLE_ARN ?
+  process.env.DYNAMODB_TABLE_ARN.split('/')[1] : '';
 const defaultParams = {
   TableName: tableName,
 };
+
 // Create the DocumentClient with the default params containing the table name
 const dynamoDb = new AWS.DynamoDB.DocumentClient(defaultParams);
 

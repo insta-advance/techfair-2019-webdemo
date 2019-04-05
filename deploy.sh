@@ -8,23 +8,6 @@ cd ./infrastructure
 
 echo "*** Deploying '$STAGE' infrastructure into region '$REGION'..."
 
-# Upload the latest CFN templates to the S3 Bucket
-# 1.1  Check if the bucket exists; if not - create one
-# 1.2  Sync the files with the bucket, overwrite any older files
-BUCKETNAME="techfair2019-$STAGE-cf-templates-$REGION"
-EXISTING_BUCKET=`aws s3 ls | grep $BUCKETNAME`
-if [ -z "$EXISTING_BUCKET" ]; then
-  echo "Bucket '$BUCKETNAME' does not exist. Creating..."
-  aws s3 mb s3://$BUCKETNAME --region $REGION
-fi
-
-echo "Uploading templates into the '$BUCKETNAME' bucket..."
-
-aws s3 sync . s3://$BUCKETNAME \
-  --delete  \
-  --exclude "*" \
-  --include "*.yaml"
-
 STACKNAME="techfair2019-$STAGE-infrastructure"
 TEMPLATE_URL="./template.yaml"
 
@@ -45,6 +28,7 @@ cd ../frontend
 
 echo "Building the frontend..."
 
+# Retrieve CFN stack output variables needed by the frontend
 API_STACKNAME="techfair2019-web-backend-$STAGE"
 API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name $API_STACKNAME --region $REGION --output text --query 'Stacks[0].Outputs[?OutputKey==`ServiceEndpoint`].{OutputValue:OutputValue}[0].OutputValue' 2> /dev/null)
 FRONTEND_BUCKET=$(aws cloudformation describe-stacks --stack-name $STACKNAME --region $REGION --output text --query 'Stacks[0].Outputs[?OutputKey==`FrontendS3`].{OutputValue:OutputValue}[0].OutputValue' 2> /dev/null)

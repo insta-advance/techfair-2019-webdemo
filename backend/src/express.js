@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const todosHandler = require('./todo/handler.express');
-const usersHandler = require('./user/handler.express');
+const todosHandler = require('./todo/handler-express');
+const usersHandler = require('./user/handler-express');
 
 const app = express();
 
@@ -19,9 +19,6 @@ app.get('/api/users', usersHandler.get);
 
 const port = process.env.PORT || 8888;
 app.listen(port, () => {
-  console.log('Express app listening on port ' + port);
-})
-
-
-
+  console.log(`Express app listening on port ${port}`);
+});
 
