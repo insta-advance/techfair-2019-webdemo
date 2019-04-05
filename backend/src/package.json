@@ -4,7 +4,7 @@
   "description": "Tech Fair 2019 Web Demo Backend",
   "scripts": {
     "lint": "eslint .",
-    "express-start-dev": "node express"
+    "express-start-dev": "nodemon express"
   },
   "keywords": [],
   "author": "Jiri Stanglica <jiri.stanglica@intopalo.com>",
@@ -16,6 +16,7 @@
     "express": "^4.16.4"
   },
   "devDependencies": {
+    "nodemon": "^1.18.10",
     "serverless-offline": "^3.20.2",
     "serverless-plugin-include-dependencies": "^3.0.0"
   },
