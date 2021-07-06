@@ -1,29 +1,30 @@
 {
-  "techfair2019-dev-infrastructure-TodosDynamoDbTable-1E0XL49KRVYZY": [
-      {
-          "PutRequest": {
-              "Item": {
-                  "id": {"S":"2"},
-                  "name": {"S":"Dick"},
-                  "todos": {"L":[
-                    {"M":{"description":{"S":"Description of todo 1"},"id":{"S":"todo1111"},"isDone":{"BOOL":false},"title":{"S":"Todo 1"}}},
-                    {"M":{"description":{"S":"Description of todo 2"},"id":{"S":"todo1112"},"isDone":{"BOOL":true},"title":{"S":"Todo 2"}}},
-                    {"M":{"description":{"S":"Description of todo 3"},"id":{"S":"todo1113"},"isDone":{"BOOL":false},"title":{"S":"Todo 3"}}}
-                  ]}
-              }
-          }
-      },
-      {
-        "PutRequest": {
+"techfair2019-dev-infrastructure-TodosDynamoDbTable-1XZ0BI9GLRJZ9":
+[
+  {
+      "PutRequest": {
           "Item": {
-              "id": {"S":"3"},
-              "name": {"S":"User 2"},
+              "id": {"S":"1"},
+              "name": {"S":"John"},
               "todos": {"L":[
-                {"M":{"description":{"S":"Finally find time to finish this thing"},"id":{"S":"todo1121"},"isDone":{"BOOL":false},"title":{"S":"Finish this stuff"}}},
-                {"M":{"description":{"S":"You need some sleep, aye"},"id":{"S":"todo1122"},"isDone":{"BOOL":false},"title":{"S":"Go to bed"}}}
+                {"M":{"description":{"S":"Description of todo 1"},"id":{"S":"todo1111"},"isDone":{"BOOL":false},"title":{"S":"Todo 1"}}},
+                {"M":{"description":{"S":"Description of todo 2"},"id":{"S":"todo1112"},"isDone":{"BOOL":true},"title":{"S":"Todo 2"}}},
+                {"M":{"description":{"S":"Description of todo 3"},"id":{"S":"todo1113"},"isDone":{"BOOL":false},"title":{"S":"Todo 3"}}}
               ]}
           }
-        }
       }
-  ]
+  },
+  {
+    "PutRequest": {
+      "Item": {
+          "id": {"S":"2"},
+          "name": {"S":"Tiina"},
+          "todos": {"L":[
+            {"M":{"description":{"S":"Finally find time to finish this thing"},"id":{"S":"todo1121"},"isDone":{"BOOL":false},"title":{"S":"Finish the thesis"}}},
+            {"M":{"description":{"S":"You need some sleep"},"id":{"S":"todo1122"},"isDone":{"BOOL":false},"title":{"S":"Go to bed early"}}}
+          ]}
+      }
+    }
+  }
+]
 }

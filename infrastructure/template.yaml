@@ -69,3 +69,6 @@ Outputs:
   FrontendS3:
     Description: Frontend Bucket Name
     Value: !Ref FrontendS3Bucket
+  FrontendS3Endpoint:
+    Description: Frontend Bucket Website Endpoint
+    Value: !GetAtt [FrontendS3Bucket, WebsiteURL]

@@ -1,14 +1,70 @@
-const AWS = require('aws-sdk');
+let _userid = 0;
+const userid = () => `${++_userid}`;
+const todoid = () => Math.random().toString(36).slice(2);
 
-// Get the table name from the table arn
-const tableName = process.env.DYNAMODB_TABLE_ARN ?
-  process.env.DYNAMODB_TABLE_ARN.split('/')[1] : '';
-const defaultParams = {
-  TableName: tableName,
+function User(name, todos = []) {
+  this.id = userid();
+  this.name = name;
+  this.todos = todos;
+}
+
+function Todo(title, description, isDone = false) {
+  this.id = todoid();
+  this.title = title;
+  this.description = description;
+  this.isDone = isDone;
+}
+
+const jsonDb = {
+  users: [
+    new User('Dude', [new Todo('Build stuff', 'You should really build some stuff')]),
+    new User('Guy'),
+  ],
+  scan({ attributes }) {
+    if (!attributes) {
+      return this.users;
+    }
+
+    return this.users.reduce((users, user) => {
+      const result = {};
+      for (const attribute of attributes) {
+        result[attribute] = user[attribute];
+      }
+
+      users.push(result);
+      return users;
+    }, []);
+  },
+  get({ attributes, id }) {
+    const user = this.users.find(u => u.id === id);
+    if (!user) {
+      return null;
+    }
+    if (!attributes) {
+      return user;
+    }
+
+    const result = {};
+    for (const attribute of attributes) {
+      result[attribute] = user[attribute];
+    }
+
+    return result;
+  },
+  update({ id, update, value }) {
+    const user = this.users.find(u => u.id === id);
+    user[update] = value;
+
+    return user[update];
+  },
+  add({ id, update, value }) {
+    console.log(id, update, value);
+    const user = this.users.find(u => u.id === id);
+    user[update].push(value);
+
+    return user[update];
+  },
 };
-
-// Create the DocumentClient with the default params containing the table name
-const dynamoDb = new AWS.DynamoDB.DocumentClient(defaultParams);
 
 /**
  * Scan the table for all the results.
@@ -18,15 +74,12 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient(defaultParams);
 const getAll = async (_options = {}) => {
   const params = {};
   if (Array.isArray(_options.attributes)) {
-    params.AttributesToGet = _options.attributes;
+    params.attributes = _options.attributes;
   }
 
-  const callParams = {
-    ...defaultParams,
-    ...params,
-  };
-  const results = await dynamoDb.scan(callParams).promise();
-  return results.Items;
+
+  const results = await jsonDb.scan(params);
+  return results;
 };
 
 /**
@@ -42,21 +95,15 @@ const getOne = async (_options = {}) => {
   }
 
   const params = {
-    Key: {
-      id: _options.key,
-    },
+    id: _options.key,
   };
   if (Array.isArray(_options.attributes)) {
-    params.AttributesToGet = _options.attributes;
+    params.attributes = _options.attributes;
   }
 
-  const callParams = {
-    ...defaultParams,
-    ...params,
-  };
-  const results = await dynamoDb.get(callParams).promise();
-  if (results.Item) {
-    return results.Item;
+  const result = await jsonDb.get(params);
+  if (result) {
+    return result;
   }
 
   return null;
@@ -74,23 +121,16 @@ const addListItem = async (_options = {}) => {
   }
 
   const params = {
-    Key: {
-      id: _options.key,
-    },
-    UpdateExpression: `SET ${_options.listName} = list_append(${_options.listName}, :val1)`,
-    ExpressionAttributeValues: {
-      ':val1': [_options.listItem],
-    },
+    id: _options.key,
+    update: _options.listName,
+    value: _options.listItem,
   };
+
   if (Array.isArray(_options.attributes)) {
-    params.AttributesToGet = _options.attributes;
+    params.attributes = _options.attributes;
   }
 
-  const callParams = {
-    ...defaultParams,
-    ...params,
-  };
-  const results = await dynamoDb.update(callParams).promise();
+  const results = await jsonDb.add(params);
 
   return results;
 };
@@ -120,31 +160,26 @@ const updateListItem = async (_options = {}) => {
   if (editedIndex === -1) {
     return null;
   }
-  items[editedIndex] = {
+
+  const newItems = JSON.parse(JSON.stringify(items));
+
+  newItems[editedIndex] = {
     ...items[editedIndex],
     ..._options.listItem,
   };
 
   const params = {
-    Key: {
-      id: _options.key,
-    },
-    UpdateExpression: `SET ${_options.listName} = :val1`,
-    ExpressionAttributeValues: {
-      ':val1': items,
-    },
+    id: _options.key,
+    update: _options.listName,
+    value: newItems,
   };
   if (Array.isArray(_options.attributes)) {
-    params.AttributesToGet = _options.attributes;
+    params.attributes = _options.attributes;
   }
 
-  const callParams = {
-    ...defaultParams,
-    ...params,
-  };
-  await dynamoDb.update(callParams).promise();
+  await jsonDb.update(params);
 
-  return items[editedIndex];
+  return newItems[editedIndex];
 };
 
 const deleteListItem = async (_options = {}) => {
@@ -172,26 +207,20 @@ const deleteListItem = async (_options = {}) => {
   if (editedIndex === -1) {
     return null;
   }
-  items.splice(editedIndex, 1);
+
+  const newItems = items.slice().splice(editedIndex, 1);
 
   const params = {
-    Key: {
-      id: _options.key,
-    },
-    UpdateExpression: `SET ${_options.listName} = :val1`,
-    ExpressionAttributeValues: {
-      ':val1': items,
-    },
+    id: _options.key,
+    update: _options.listName,
+    value: newItems,
   };
+
   if (Array.isArray(_options.attributes)) {
-    params.AttributesToGet = _options.attributes;
+    params.attributes = _options.attributes;
   }
 
-  const callParams = {
-    ...defaultParams,
-    ...params,
-  };
-  await dynamoDb.update(callParams).promise();
+  await jsonDb.update(params);
 
   return true;
 };
